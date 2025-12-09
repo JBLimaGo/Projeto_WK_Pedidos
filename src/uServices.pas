@@ -9,7 +9,7 @@ type
   TPedidoService = class
   public
     class procedure AddItemToPedido(APedido: TPedido; ACodigoProduto: Integer; AQuantidade: Double; AValorUnitario: Currency; AConn: TFDConnection);
-    class procedure UpdateItem(APedido: TPedido; AIndex: Integer; AQuantidade: Double; AValorUnitario: Currency);
+    class procedure UpdateItem(pedido: TPedido; index: Integer; novoCodProd: Integer; novaQtd: Double; novoValor: Currency);
     class procedure RemoveItem(APedido: TPedido; AIndex: Integer);
     class procedure SavePedido(AConn: TFDConnection; APedido: TPedido);
     class function LoadPedido(AConn: TFDConnection; ANumeroPedido: Int64): TPedido;
@@ -47,18 +47,23 @@ begin
   prod.Free;
 end;
 
-class procedure TPedidoService.UpdateItem(APedido: TPedido; AIndex: Integer; AQuantidade: Double; AValorUnitario: Currency);
+class procedure TPedidoService.UpdateItem(pedido: TPedido; index: Integer; novoCodProd: Integer; novaQtd: Double; novoValor: Currency);
 var
   it: TPedidoItem;
 begin
 
-  if (AIndex < 0) or (AIndex >= APedido.Itens.Count) then
-    raise Exception.Create('Item inválido para atualização.');
+  if (index < 0) or (index >= pedido.Itens.Count) then
+    begin
+      raise Exception.Create('Item inválido para atualização.');
+      Exit;
+    end;
 
-  it               := APedido.Itens[AIndex];
-  it.Quantidade    := AQuantidade;
-  it.ValorUnitario := AValorUnitario;
-  APedido.RecalcularTotal;
+
+  it := pedido.Itens[index];
+  it.CodigoProduto := novoCodProd;
+  it.Quantidade    := novaQtd;
+  it.ValorUnitario := novoValor;
+
 end;
 
 class procedure TPedidoService.RemoveItem(APedido: TPedido; AIndex: Integer);

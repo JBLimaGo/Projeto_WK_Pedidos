@@ -3,9 +3,11 @@ unit uModels;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Generics.Collections, Data.DB, Math;
+  System.SysUtils, System.Generics.Collections, Math;
 
 type
+
+  //  MODEL: Cliente
   TCliente = class
   private
     FCodigo: Integer;
@@ -19,6 +21,7 @@ type
     property UF: string read FUF write FUF;
   end;
 
+  //  MODEL: Produto
   TProduto = class
   private
     FCodigo: Integer;
@@ -30,6 +33,7 @@ type
     property PrecoVenda: Currency read FPrecoVenda write FPrecoVenda;
   end;
 
+  //  MODEL: Itens do Pedido
   TPedidoItem = class
   private
     FAutoincrem: Int64;
@@ -47,6 +51,7 @@ type
     property ValorTotal: Currency read GetValorTotal;
   end;
 
+  //  MODEL: Pedido
   TPedido = class
   private
     FNumeroPedido: Int64;
@@ -63,6 +68,7 @@ type
     property CodigoCliente: Integer read FCodigoCliente write FCodigoCliente;
     property ValorTotal: Currency read FValorTotal write FValorTotal;
     property Itens: TObjectList<TPedidoItem> read FItens;
+
     procedure RecalcularTotal;
   end;
 
@@ -79,9 +85,9 @@ end;
 
 constructor TPedido.Create;
 begin
-  FItens       := TObjectList<TPedidoItem>.Create(True);
+  FItens := TObjectList<TPedidoItem>.Create(True);
   FDataEmissao := Now;
-  FValorTotal  := 0;
+  FValorTotal := 0;
 end;
 
 destructor TPedido.Destroy;
@@ -93,14 +99,10 @@ end;
 procedure TPedido.RecalcularTotal;
 var
   it: TPedidoItem;
-  total: Currency;
 begin
-  total       := 0;
-
+  FValorTotal := 0;
   for it in FItens do
-    total     := total + it.ValorTotal;
-
-  FValorTotal := total;
+    FValorTotal := FValorTotal + it.ValorTotal;
 end;
 
 end.

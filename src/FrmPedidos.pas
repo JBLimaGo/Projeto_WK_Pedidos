@@ -193,7 +193,7 @@ begin
   try
 
     if FEditingIndex >= 0 then
-      TPedidoService.UpdateItem(FPedido, FEditingIndex, qtde, vunit)
+      TPedidoService.UpdateItem(FPedido, FEditingIndex, codProd, qtde, vunit)
     else
       TPedidoService.AddItemToPedido(FPedido, codProd, qtde, vunit, FConn);
 
@@ -310,6 +310,8 @@ begin
     // popula properties do pedido antes de salvar
     PopulatePedidoFromMemTable;
     FPedido.DataEmissao := Now;
+
+
 
     // valida e grava
     TPedidoService.SavePedido(FConn, FPedido);

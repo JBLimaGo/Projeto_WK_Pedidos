@@ -1,4 +1,4 @@
-unit uDAOs;
+ï»¿unit uDAOs;
 
 interface
 
@@ -19,7 +19,7 @@ type
 
   TPedidoDAO = class
   public
-    /// Gera número de pedido sequencial
+    /// Gera nÃºmero de pedido sequencial
     class function GeneratePedidoNumber(AConn: TFDConnection): Int64;
     /// Grava pedido e itens
     class procedure SavePedido(AConn: TFDConnection; APedido: TPedido);
@@ -90,7 +90,7 @@ class function TPedidoDAO.GeneratePedidoNumber(AConn: TFDConnection): Int64;
 var
   q: TFDQuery;
 begin
-  // Usa tabela pedido_seq; faz SELECT ... FOR UPDATE para garantir sequência única na transação
+  // Usa tabela pedido_seq; faz SELECT ... FOR UPDATE para garantir sequÃªncia Ãºnica na transaÃ§Ã£o
   q := TFDQuery.Create(nil);
   try
     q.Connection := AConn;
@@ -98,7 +98,7 @@ begin
     q.Open;
 
     if q.IsEmpty then
-      raise Exception.Create('Sequência de pedidos não inicializada (pedido_seq).');
+      raise Exception.Create('SequÃªncia de pedidos nÃ£o inicializada (pedido_seq).');
 
     Result := q.FieldByName('last_no').AsLargeInt + 1;
 
@@ -115,60 +115,137 @@ end;
 class procedure TPedidoDAO.SavePedido(AConn: TFDConnection; APedido: TPedido);
 var
   q: TFDQuery;
-  i: Integer;
-  it: TPedidoItem;
+  qOld: TFDQuery;
+  OldItems: TDictionary<Int64, Boolean>;
+  Item: TPedidoItem;
 begin
   if APedido = nil then
-    raise Exception.Create('Pedido inválido.');
+    raise Exception.Create('Pedido invÃ¡lido.');
 
   q := TFDQuery.Create(nil);
+  qOld := TFDQuery.Create(nil);
+
   try
     q.Connection := AConn;
+    qOld.Connection := AConn;
 
-    // Inicia transação
     AConn.StartTransaction;
     try
-      // Se número do pedido = 0, gerar novo
+      // Gerar nÃºmero se for pedido novo
       if APedido.NumeroPedido = 0 then
         APedido.NumeroPedido := GeneratePedidoNumber(AConn);
 
-      // Inserir na tabela pedidos
-      q.SQL.Text := 'INSERT INTO pedidos (numero_pedido, data_emissao, codigo_cliente, valor_total) ' +
-                    'VALUES (:num, :data, :codcli, :valor)';
+      // Verifica se o pedido jÃ¡ existe
+      q.SQL.Text := 'SELECT COUNT(*) FROM pedidos WHERE numero_pedido = :num';
+      q.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
+      q.Open;
 
-      q.Params[0].AsLargeInt := APedido.NumeroPedido;
+      if q.Fields[0].AsInteger = 0 then
+      begin
+        // Insert pedido
+        q.Close;
+        q.SQL.Text :=
+          'INSERT INTO pedidos (numero_pedido, data_emissao, codigo_cliente, valor_total) ' +
+          'VALUES (:num, :data, :codcli, :valor)';
+      end
+      else
+      begin
+        // Update pedido
+        q.Close;
+        q.SQL.Text :=
+          'UPDATE pedidos SET data_emissao = :data, codigo_cliente = :codcli, valor_total = :valor ' +
+          'WHERE numero_pedido = :num';
+      end;
+
+      q.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
       q.ParamByName('data').AsDateTime := APedido.DataEmissao;
       q.ParamByName('codcli').AsInteger := APedido.CodigoCliente;
       q.ParamByName('valor').AsCurrency := APedido.ValorTotal;
       q.ExecSQL;
 
-      // Inserir itens
-      for i := 0 to APedido.Itens.Count - 1 do
-      begin
-        it := APedido.Itens[i];
-        q.SQL.Text := 'INSERT INTO pedido_produtos (numero_pedido, codigo_produto, quantidade, valor_unitario, valor_total) ' +
-                      'VALUES (:num, :codprod, :qtde, :vunit, :vtotal)';
 
-        q.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
-        q.ParamByName('codprod').AsInteger := it.CodigoProduto;
-        q.ParamByName('qtde').AsFloat := it.Quantidade;
-        q.ParamByName('vunit').AsCurrency := it.ValorUnitario;
-        q.ParamByName('vtotal').AsCurrency := it.ValorTotal;
-        q.ExecSQL;
+      // Carrega IDs antigos dos itens
+      OldItems := TDictionary<Int64, Boolean>.Create;
+      try
+        qOld.SQL.Text :=
+          'SELECT autoincrem FROM pedido_produtos WHERE numero_pedido = :num';
+        qOld.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
+        qOld.Open;
+
+        while not qOld.Eof do
+        begin
+          OldItems.Add(qOld.FieldByName('autoincrem').AsLargeInt, False);
+          qOld.Next;
+        end;
+
+
+        // Percorre itens do novo pedido
+        for Item in APedido.Itens do
+        begin
+          if Item.Autoincrem = 0 then
+          begin
+            // Insert item novo
+            q.SQL.Text :=
+              'INSERT INTO pedido_produtos (numero_pedido, codigo_produto, quantidade, valor_unitario, valor_total)' +
+              'VALUES (:num, :codprod, :qtde, :vunit, :vtotal)';
+
+            q.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
+            q.ParamByName('codprod').AsInteger := Item.CodigoProduto;
+            q.ParamByName('qtde').AsFloat := Item.Quantidade;
+            q.ParamByName('vunit').AsCurrency := Item.ValorUnitario;
+            q.ParamByName('vtotal').AsCurrency := Item.ValorTotal;
+            q.ExecSQL;
+
+            // pega o id gerado
+            Item.Autoincrem := AConn.ExecSQLScalar('SELECT LAST_INSERT_ID()');
+          end
+          else
+          begin
+            // Update item existente
+            q.SQL.Text :=
+              'UPDATE pedido_produtos SET quantidade = :qtde, valor_unitario = :vunit, valor_total = :vtotal ' +
+              'WHERE autoincrem = :id';
+
+            q.ParamByName('qtde').AsFloat := Item.Quantidade;
+            q.ParamByName('vunit').AsCurrency := Item.ValorUnitario;
+            q.ParamByName('vtotal').AsCurrency := Item.ValorTotal;
+            q.ParamByName('id').AsLargeInt := Item.Autoincrem;
+            q.ExecSQL;
+
+            // marca que esse item continua ativo
+            OldItems.AddOrSetValue(Item.Autoincrem, True);
+          end;
+        end;
+
+
+        // Remover itens apagados
+        for var OldID in OldItems.Keys do
+        begin
+          if not OldItems[OldID] then
+          begin
+            q.SQL.Text := 'DELETE FROM pedido_produtos WHERE autoincrem = :id';
+            q.ParamByName('id').AsLargeInt := OldID;
+            q.ExecSQL;
+          end;
+        end;
+
+      finally
+        OldItems.Free;
       end;
+
 
       AConn.Commit;
     except
-      on E: Exception do
-      begin
-        AConn.Rollback;
-        raise; // propaga exceção para camada superior
-      end;
+      AConn.Rollback;
+      raise;
     end;
+
   finally
     q.Free;
+    qOld.Free;
   end;
 end;
+
 
 class function TPedidoDAO.LoadPedido(AConn: TFDConnection; ANumeroPedido: Int64): TPedido;
 var
