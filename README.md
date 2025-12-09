@@ -3,7 +3,7 @@
 Estrutura do Projeto
 
 Projeto_WK_Pedidos/
-│
+│      
 ├── src/                     → Código-fonte (.pas, .dfm)
 │   ├── uModels.pas
 │   ├── uDAOs.pas
