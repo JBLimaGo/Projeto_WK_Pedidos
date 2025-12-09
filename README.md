@@ -1,3 +1,35 @@
+Tecnologias Utilizadas
+
+
+
+Delphi (RAD Studio) — VCL
+
+
+
+MySQL
+
+
+
+FireDAC (com libmysql.dll)
+
+
+
+POO / MVC / Clean Code
+
+
+
+TDD parcial (models validados)
+
+
+
+Arquitetura em camadas (Models, DAO, Services, UI)
+
+
+
+
+
+
+
 
 
 \# Projeto\_WK\_Pedidos
@@ -10,7 +42,7 @@ Estrutura do Projeto
 
 Projeto\_WK\_Pedidos/
 
-│      
+│
 
 ├── src/                     → Código-fonte (.pas, .dfm)
 
@@ -51,6 +83,4 @@ Projeto\_WK\_Pedidos/
 ├── README.md                → Este arquivo
 
 └── .gitignore               → Padrões Delphi + binários
-
-
 
