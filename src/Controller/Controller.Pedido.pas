@@ -129,16 +129,21 @@ begin
     // Valida se todos os produtos existem
     for Item in Pedido.Itens do
     begin
-      if not ValidarProduto(Item.CodigoProduto, Produto) then
-      begin
-        Mensagem := 'Produto com código ' + IntToStr(Item.CodigoProduto) + ' não encontrado';
-        Exit;
+      Produto := nil;
+      try
+        if not ValidarProduto(Item.CodigoProduto, Produto) then
+        begin
+          Mensagem := 'Produto com código ' + IntToStr(Item.CodigoProduto) + ' não encontrado';
+          Exit;
+        end;
+        
+        // Atualiza o valor unitário com o preço atual do produto
+        Item.ValorUnitario := Produto.PrecoVenda;
+        Item.AtualizarValorTotal;
+      finally
+        if Assigned(Produto) then
+          Produto.Free;
       end;
-      
-      // Atualiza o valor unitário com o preço atual do produto
-      Item.ValorUnitario := Produto.PrecoVenda;
-      Item.AtualizarValorTotal;
-      Produto.Free;
     end;
     
     // Atualiza o valor total do pedido

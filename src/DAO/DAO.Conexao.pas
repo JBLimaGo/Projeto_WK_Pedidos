@@ -74,7 +74,9 @@ begin
   FConexao.Params.Add('Port=3306');
   FConexao.Params.Add('Database=pedidos');
   FConexao.Params.Add('User_Name=root');
-  FConexao.Params.Add('Password=');
+  // NOTA DE SEGURANÇA: Em ambiente de produção, não use senha vazia e não hardcode credenciais
+  // Utilize variáveis de ambiente, arquivo de configuração criptografado ou gerenciador de secrets
+  FConexao.Params.Add('Password=');  
   FConexao.Params.Add('CharacterSet=utf8mb4');
   
   FConexao.LoginPrompt := False;

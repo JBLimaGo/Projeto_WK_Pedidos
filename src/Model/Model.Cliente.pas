@@ -109,6 +109,27 @@ begin
     Result := False;
     Exit;
   end;
+  
+  // Valida se é uma UF válida do Brasil
+  if not (UpperCase(FUF) = 'AC') and not (UpperCase(FUF) = 'AL') and 
+     not (UpperCase(FUF) = 'AP') and not (UpperCase(FUF) = 'AM') and
+     not (UpperCase(FUF) = 'BA') and not (UpperCase(FUF) = 'CE') and
+     not (UpperCase(FUF) = 'DF') and not (UpperCase(FUF) = 'ES') and
+     not (UpperCase(FUF) = 'GO') and not (UpperCase(FUF) = 'MA') and
+     not (UpperCase(FUF) = 'MT') and not (UpperCase(FUF) = 'MS') and
+     not (UpperCase(FUF) = 'MG') and not (UpperCase(FUF) = 'PA') and
+     not (UpperCase(FUF) = 'PB') and not (UpperCase(FUF) = 'PR') and
+     not (UpperCase(FUF) = 'PE') and not (UpperCase(FUF) = 'PI') and
+     not (UpperCase(FUF) = 'RJ') and not (UpperCase(FUF) = 'RN') and
+     not (UpperCase(FUF) = 'RS') and not (UpperCase(FUF) = 'RO') and
+     not (UpperCase(FUF) = 'RR') and not (UpperCase(FUF) = 'SC') and
+     not (UpperCase(FUF) = 'SP') and not (UpperCase(FUF) = 'SE') and
+     not (UpperCase(FUF) = 'TO') then
+  begin
+    Mensagem := 'UF inválida. Informe um estado válido do Brasil';
+    Result := False;
+    Exit;
+  end;
 end;
 
 end.

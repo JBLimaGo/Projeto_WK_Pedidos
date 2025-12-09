@@ -83,8 +83,8 @@ end;
 
 procedure TItemPedido.SetValorUnitario(const Value: Currency);
 begin
-  if Value < 0 then
-    raise Exception.Create('Valor unitário não pode ser negativo');
+  if Value <= 0 then
+    raise Exception.Create('Valor unitário deve ser maior que zero');
   FValorUnitario := Value;
   CalcularValorTotal;
 end;
