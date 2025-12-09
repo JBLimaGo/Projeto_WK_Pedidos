@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2025/11/24 20:06:16.000.073,=D:\Embarcadero\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/11/24 20:46:08.000.345,=D:\Embarcadero\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/11/24 22:37:56.000.302,=D:\Embarcadero\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:35:02.000.185,=D:\Embarcadero\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:37:24.000.661,D:\Embarcadero\Projects\Unit1.pas=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\FrmPedidos.pas</Transaction>
+    <Transaction>2025/12/08 17:37:24.000.661,D:\Embarcadero\Projects\Unit1.dfm=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\FrmPedidos.dfm</Transaction>
+    <Transaction>2025/12/08 17:37:43.000.307,D:\Embarcadero\Projects\Project1.dproj=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Project1.dproj</Transaction>
+    <Transaction>2025/12/08 17:46:25.000.487,=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:46:50.000.814,D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\uConfig.pas</Transaction>
+    <Transaction>2025/12/08 17:47:23.000.697,=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:47:45.000.672,D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\uConnectionFactory.pas</Transaction>
+    <Transaction>2025/12/08 17:47:55.000.993,=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:48:16.000.553,D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\uModels.pas</Transaction>
+    <Transaction>2025/12/08 17:48:37.000.549,=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:48:57.000.593,D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\uDAOs.pas</Transaction>
+    <Transaction>2025/12/08 17:49:12.000.526,=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas</Transaction>
+    <Transaction>2025/12/08 17:49:27.000.766,D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\Unit1.pas=D:\Embarcadero\Projects\Projeto_WK_Pedidos\src\uServices.pas</Transaction>
+  </Transactions>
+</BorlandProject>
