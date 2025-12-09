@@ -3,6 +3,7 @@ unit Model.Cliente;
 interface
 
 const
+  // Todas as Unidades Federativas do Brasil (26 estados + 1 Distrito Federal = 27 UFs)
   UFS_VALIDAS: array[0..26] of string = (
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO',
     'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI',
