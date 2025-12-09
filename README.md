@@ -80,5 +80,4 @@ Projeto\_WK\_Pedidos/
 
 ├── README.md                → Este arquivo
 
-└── .gitignore               → Padrões Delphi + binários
 
