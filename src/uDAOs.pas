@@ -141,24 +141,24 @@ begin
       q.Open;
 
       if q.Fields[0].AsInteger = 0 then
-      begin
-        // Insert pedido
-        q.Close;
-        q.SQL.Text :=
-          'INSERT INTO pedidos (numero_pedido, data_emissao, codigo_cliente, valor_total) ' +
-          'VALUES (:num, :data, :codcli, :valor)';
-      end
+        begin
+          // Insert pedido
+          q.Close;
+          q.SQL.Text :=
+            'INSERT INTO pedidos (numero_pedido, data_emissao, codigo_cliente, valor_total) ' +
+            'VALUES (:num, :data, :codcli, :valor)';
+        end
       else
-      begin
-        // Update pedido
-        q.Close;
-        q.SQL.Text :=
-          'UPDATE pedidos SET data_emissao = :data, codigo_cliente = :codcli, valor_total = :valor ' +
-          'WHERE numero_pedido = :num';
-      end;
+        begin
+          // Update pedido
+          q.Close;
+          q.SQL.Text :=
+            'UPDATE pedidos SET data_emissao = :data, codigo_cliente = :codcli, valor_total = :valor ' +
+            'WHERE numero_pedido = :num';
+        end;
 
-      q.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
-      q.ParamByName('data').AsDateTime := APedido.DataEmissao;
+      q.ParamByName('num').AsLargeInt   := APedido.NumeroPedido;
+      q.ParamByName('data').AsDateTime  := APedido.DataEmissao;
       q.ParamByName('codcli').AsInteger := APedido.CodigoCliente;
       q.ParamByName('valor').AsCurrency := APedido.ValorTotal;
       q.ExecSQL;
@@ -167,67 +167,66 @@ begin
       // Carrega IDs antigos dos itens
       OldItems := TDictionary<Int64, Boolean>.Create;
       try
-        qOld.SQL.Text :=
-          'SELECT autoincrem FROM pedido_produtos WHERE numero_pedido = :num';
+        qOld.SQL.Text := 'SELECT autoincrem FROM pedido_produtos WHERE numero_pedido = :num';
         qOld.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
         qOld.Open;
 
         while not qOld.Eof do
-        begin
-          OldItems.Add(qOld.FieldByName('autoincrem').AsLargeInt, False);
-          qOld.Next;
-        end;
+          begin
+            OldItems.Add(qOld.FieldByName('autoincrem').AsLargeInt, False);
+            qOld.Next;
+          end;
 
 
         // Percorre itens do novo pedido
         for Item in APedido.Itens do
         begin
           if Item.Autoincrem = 0 then
-          begin
-            // Insert item novo
-            q.SQL.Text :=
-              'INSERT INTO pedido_produtos (numero_pedido, codigo_produto, quantidade, valor_unitario, valor_total)' +
-              'VALUES (:num, :codprod, :qtde, :vunit, :vtotal)';
+            begin
+              // Insert item novo
+              q.SQL.Text :=
+                'INSERT INTO pedido_produtos (numero_pedido, codigo_produto, quantidade, valor_unitario, valor_total)' +
+                'VALUES (:num, :codprod, :qtde, :vunit, :vtotal)';
 
-            q.ParamByName('num').AsLargeInt := APedido.NumeroPedido;
-            q.ParamByName('codprod').AsInteger := Item.CodigoProduto;
-            q.ParamByName('qtde').AsFloat := Item.Quantidade;
-            q.ParamByName('vunit').AsCurrency := Item.ValorUnitario;
-            q.ParamByName('vtotal').AsCurrency := Item.ValorTotal;
-            q.ExecSQL;
+              q.ParamByName('num').AsLargeInt     := APedido.NumeroPedido;
+              q.ParamByName('codprod').AsInteger  := Item.CodigoProduto;
+              q.ParamByName('qtde').AsFloat       := Item.Quantidade;
+              q.ParamByName('vunit').AsCurrency   := Item.ValorUnitario;
+              q.ParamByName('vtotal').AsCurrency  := Item.ValorTotal;
+              q.ExecSQL;
 
-            // pega o id gerado
-            Item.Autoincrem := AConn.ExecSQLScalar('SELECT LAST_INSERT_ID()');
-          end
+              // pega o id gerado
+              Item.Autoincrem := AConn.ExecSQLScalar('SELECT LAST_INSERT_ID()');
+            end
           else
-          begin
-            // Update item existente
-            q.SQL.Text :=
-              'UPDATE pedido_produtos SET quantidade = :qtde, valor_unitario = :vunit, valor_total = :vtotal ' +
-              'WHERE autoincrem = :id';
+            begin
+              // Update item existente
+              q.SQL.Text :=
+                'UPDATE pedido_produtos SET quantidade = :qtde, valor_unitario = :vunit, valor_total = :vtotal ' +
+                'WHERE autoincrem = :id';
 
-            q.ParamByName('qtde').AsFloat := Item.Quantidade;
-            q.ParamByName('vunit').AsCurrency := Item.ValorUnitario;
-            q.ParamByName('vtotal').AsCurrency := Item.ValorTotal;
-            q.ParamByName('id').AsLargeInt := Item.Autoincrem;
-            q.ExecSQL;
+              q.ParamByName('qtde').AsFloat      := Item.Quantidade;
+              q.ParamByName('vunit').AsCurrency  := Item.ValorUnitario;
+              q.ParamByName('vtotal').AsCurrency := Item.ValorTotal;
+              q.ParamByName('id').AsLargeInt     := Item.Autoincrem;
+              q.ExecSQL;
 
-            // marca que esse item continua ativo
-            OldItems.AddOrSetValue(Item.Autoincrem, True);
-          end;
+              // marca que esse item continua ativo
+              OldItems.AddOrSetValue(Item.Autoincrem, True);
+            end;
         end;
 
 
         // Remover itens apagados
         for var OldID in OldItems.Keys do
-        begin
-          if not OldItems[OldID] then
           begin
-            q.SQL.Text := 'DELETE FROM pedido_produtos WHERE autoincrem = :id';
-            q.ParamByName('id').AsLargeInt := OldID;
-            q.ExecSQL;
+            if not OldItems[OldID] then
+              begin
+                q.SQL.Text := 'DELETE FROM pedido_produtos WHERE autoincrem = :id';
+                q.ParamByName('id').AsLargeInt := OldID;
+                q.ExecSQL;
+              end;
           end;
-        end;
 
       finally
         OldItems.Free;
