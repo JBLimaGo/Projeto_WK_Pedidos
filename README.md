@@ -1,3 +1,7 @@
+\# Projeto\_WK\_Pedidos
+
+
+
 Tecnologias Utilizadas
 
 
@@ -27,12 +31,6 @@ Arquitetura em camadas (Models, DAO, Services, UI)
 
 
 
-
-
-
-
-
-\# Projeto\_WK\_Pedidos
 
 
 
