@@ -1,0 +1,71 @@
+# Arquivos binários e de compilação do Delphi
+*.dcu
+*.exe
+*.dll
+*.bpl
+*.bpi
+*.dcp
+*.so
+*.apk
+*.drc
+*.map
+*.dres
+*.rsm
+*.tds
+*.dsk
+*.~*
+*.local
+*.identcache
+*.projdata
+*.tvsconfig
+*.dsk
+
+# Diretórios de compilação
+__history/
+__recovery/
+Win32/
+Win64/
+Debug/
+Release/
+.svn/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.log
+*.stat
+*.swp
+*.bak
+*.cache
+
+# Arquivos do IDE
+*.cbk
+*.deployproj
+
+# ModelMaker Code Explorer
+*.mmb
+
+# Castalia statistics
+*.stat
+
+# Backup files
+*~
+
+# Desktop.ini (Windows)
+Desktop.ini
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node modules (se houver ferramentas JS)
+node_modules/
+
+# Arquivos de configuração local
+*.local.pas
+*.local.dfm
